@@ -1,6 +1,6 @@
 import { IncomePeriod } from "@/entity/IncomePeriod";
 import * as sqldb from "expo-sqlite";
-import incomeCategoryRepository from "./incomeCategories";
+import incomeCategoryRepository from "./incomeCategoriesRepository";
 
 const db = await sqldb.openDatabaseAsync("finansel.db");
 
@@ -99,8 +99,10 @@ const incomePeriodRepository = {
         });
         return Promise.all(resultWithIncomeCategory);
     },
-
+    //NOT WORKING DONT USE
     update: async (incomePeriod: IncomePeriod): Promise<void> => {
+
+        throw new Error("Not working dont use");
         if (!incomePeriod.id) {
             throw new Error("IncomePeriod ID is required for update");
         }

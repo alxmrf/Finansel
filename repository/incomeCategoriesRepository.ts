@@ -37,6 +37,8 @@ const incomeCategoryRepository = {
         return result;
     },
     updateIncomeCategory: async (incomeCategory:IncomeCategory): Promise<void>=>{
+                throw new Error("Not working dont use");
+
         const db = await sqldatabase.openDatabaseAsync("finansel.db")
         if(!incomeCategory.id) throw new Error("Income category ID is required for update")
         await db.withTransactionAsync(async ()=>{
