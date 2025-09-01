@@ -1,10 +1,12 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Slot, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { View } from 'react-native';
+import { FinanselDarkTheme } from '@/styling/Themes';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -18,12 +20,21 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    // 1. ThemeProvider now wraps the app to provide theme colors.
+    <ThemeProvider value={colorScheme === 'dark' ? FinanselDarkTheme : DefaultTheme}>
+      
+      {/* 2. The Stack navigator is the root component. */}
       <Stack>
+        {/* 3. Let the (tabs) layout manage its own header. */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        
+        {/* This screen is for handling unmatched routes. */}
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
+
+      {/* 4. The StatusBar style is now tied to the color scheme. */}
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+
     </ThemeProvider>
   );
 }
