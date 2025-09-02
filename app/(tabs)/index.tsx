@@ -1,29 +1,33 @@
-import { Image } from 'expo-image';
-import { Button, Modal, Platform, StyleSheet, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { useState } from 'react';
+import AddIncomeCategoryModal from '@/src/components/Modals/AddIncomeCategoryModal';
+import IncomeCategory from '@/src/entity/IncomeCategory';
+import incomeCategoryRepository from '@/src/repository/incomeCategoriesRepository';
+import { useEffect, useState } from 'react';
 
 export default function HomeScreen() {
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
+  const [incomeCategory, setIncomeCategory] = useState<IncomeCategory>();
+  const [incomeCategories, setIncomeCategories] = useState<IncomeCategory[]>([]);
+
+  useEffect(() => {
+    const fetchIncomeCategories = async () => {
+      const categories = await incomeCategoryRepository.findAllIncomeCategories();
+      setIncomeCategories(categories);
+    };
+    fetchIncomeCategories();
+  }, []);
+
   return (
   <>    
 
       <View style={{flex:1, justifyContent:'flex-start', alignItems:'center',marginTop: '30%'}}>
-          <Modal animationType="slide" transparent={true} visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)}>
-              <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-                  <ThemedView>
-                      <ThemedText>Hello from the modal!</ThemedText>
-                      <Button title='Close' onPress={() => setIsModalVisible(false)}/>
-                  </ThemedView>
-              </View>
-          </Modal>
-
+          <AddIncomeCategoryModal isVisible={isModalVisible} onClose={() => setIsModalVisible(false)}/>
+          {incomeCategories.map((category) => (
+            <Text key={category.id}>{category.name}, {category.isInvestable ? "Investable" : "Not Investable"}</Text>
+          ))}
           <Button title='hello' onPress={() => setIsModalVisible(true)}/>
       </View>
 

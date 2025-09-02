@@ -1,17 +1,18 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Slot, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { View } from 'react-native';
-import { FinanselDarkTheme } from '@/styling/Themes';
+import { useColorScheme } from '@/src/hooks/useColorScheme';
+import Colors from '@/src/styling/Colors';
+import { createDatabase } from '@/src/repository/database';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  createDatabase();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require('../src/assets/fonts/SpaceMono-Regular.ttf'),
   });
 
   if (!loaded) {
@@ -21,8 +22,14 @@ export default function RootLayout() {
 
   return (
     // 1. ThemeProvider now wraps the app to provide theme colors.
-    <ThemeProvider value={colorScheme === 'dark' ? FinanselDarkTheme : DefaultTheme}>
-      
+    <ThemeProvider
+      value={
+        colorScheme === 'dark'
+          ? { ...DefaultTheme, dark: true, colors: { ...DefaultTheme.colors, ...Colors.dark } }
+          : DefaultTheme
+      }
+    >
+
       {/* 2. The Stack navigator is the root component. */}
       <Stack>
         {/* 3. Let the (tabs) layout manage its own header. */}
